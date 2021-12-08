@@ -2,9 +2,9 @@
 
 namespace GTerrusa\LaravelGoogleCalendar;
 
+use GTerrusa\LaravelGoogleCalendar\Commands\LaravelGoogleCalendarQuickstartCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use GTerrusa\LaravelGoogleCalendar\Commands\LaravelGoogleCalendarQuickstartCommand;
 
 class LaravelGoogleCalendarServiceProvider extends PackageServiceProvider
 {

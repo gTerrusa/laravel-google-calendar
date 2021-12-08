@@ -2,9 +2,9 @@
 
 namespace GTerrusa\LaravelGoogleCalendar\Tests;
 
+use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendarServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendarServiceProvider;
 
 class TestCase extends Orchestra
 {

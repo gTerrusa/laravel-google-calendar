@@ -25,12 +25,12 @@ class LaravelGoogleCalendarQuickstartCommand extends Command
 
         // Print the next 10 events on the user's calendar.
         $calendarId = 'primary';
-        $optParams = array(
+        $optParams = [
             'maxResults' => 10,
             'orderBy' => 'startTime',
             'singleEvents' => true,
             'timeMin' => date('c'),
-        );
+        ];
         $results = $service->events->listEvents($calendarId, $optParams);
         $events = $results->getItems();
 
@@ -95,11 +95,12 @@ class LaravelGoogleCalendarQuickstartCommand extends Command
                 }
             }
             // Save the token to a file.
-            if (!file_exists(dirname(config('google-calendar.google-oauth-token-path')))) {
+            if (! file_exists(dirname(config('google-calendar.google-oauth-token-path')))) {
                 mkdir(dirname(config('google-calendar.google-oauth-token-path')), 0700, true);
             }
             file_put_contents(config('google-calendar.google-oauth-token-path'), json_encode($client->getAccessToken()));
         }
+
         return $client;
     }
 }
