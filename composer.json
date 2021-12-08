@@ -1,24 +1,25 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "gterrusa/laravel-google-calendar",
+    "description": "Laravel Google Calendar package",
     "keywords": [
-        ":vendor_name",
+        "gTerrusa",
         "laravel",
-        ":package_slug"
+        "laravel-google-calendar"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/gterrusa/laravel-google-calendar",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "gTerrusa",
+            "email": "gterrusa743@gmail.com",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.0",
-        "spatie/laravel-package-tools": "^1.9.2",
-        "illuminate/contracts": "^8.73"
+        "php": "^7.4|^8.0",
+        "illuminate/contracts": "^8.73",
+        "spatie/laravel-google-calendar": "^3.4",
+        "spatie/laravel-package-tools": "^1.9.2"
     },
     "require-dev": {
         "nunomaduro/collision": "^5.10",
@@ -34,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "GTerrusa\\LaravelGoogleCalendar\\": "src",
+            "GTerrusa\\LaravelGoogleCalendar\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "GTerrusa\\LaravelGoogleCalendar\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -54,10 +55,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "GTerrusa\\LaravelGoogleCalendar\\LaravelGoogleCalendarServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "LaravelGoogleCalendar": "GTerrusa\\LaravelGoogleCalendar\\Facades\\LaravelGoogleCalendar"
             }
         }
     },

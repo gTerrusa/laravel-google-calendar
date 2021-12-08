@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace GTerrusa\LaravelGoogleCalendar;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use GTerrusa\LaravelGoogleCalendar\Commands\LaravelGoogleCalendarQuickstartCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class LaravelGoogleCalendarServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('laravel-google-calendar')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_skeleton_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_laravel-google-calendar_table')
+            ->hasCommand(LaravelGoogleCalendarQuickstartCommand::class);
     }
 }
