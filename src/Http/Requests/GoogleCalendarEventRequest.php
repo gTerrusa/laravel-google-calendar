@@ -36,7 +36,7 @@ class GoogleCalendarEventRequest extends FormRequest
             'location' => 'nullable|string',
             'recurrence' => 'nullable|array',
             'include_following' => 'nullable|boolean',
-            'event_type' => Rule::in(['tour', 'event'])
+            'event_type' => Rule::in(['tour', 'event']),
         ];
     }
 }

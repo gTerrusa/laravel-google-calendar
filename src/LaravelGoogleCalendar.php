@@ -2,7 +2,6 @@
 
 namespace GTerrusa\LaravelGoogleCalendar;
 
-use GTerrusa\LaravelGoogleCalendar\Http\Requests\GoogleCalendarEventRequest;
 use Carbon\Carbon;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Calendar;
@@ -11,6 +10,7 @@ use Google_Service_Calendar_Event;
 use Google_Service_Calendar_EventAttendee;
 use Google_Service_Calendar_EventDateTime;
 use Google_Service_Calendar_EventExtendedProperties;
+use GTerrusa\LaravelGoogleCalendar\Http\Requests\GoogleCalendarEventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use RRule\RRule;
@@ -28,7 +28,7 @@ class LaravelGoogleCalendar extends Event
     {
         return [
             'dateTime' => $carbon->toDateTimeLocalString(),
-            'timeZone' => $carbon->getTimezone()->getName()
+            'timeZone' => $carbon->getTimezone()->getName(),
         ];
     }
 
@@ -42,7 +42,7 @@ class LaravelGoogleCalendar extends Event
     {
         return [
             'date' => $carbon->toDateString(),
-            'timeZone' => $carbon->getTimezone()->getName()
+            'timeZone' => $carbon->getTimezone()->getName(),
         ];
     }
 
@@ -81,6 +81,7 @@ class LaravelGoogleCalendar extends Event
             ->map(function ($event) use ($calendarId) {
                 $event = $event->googleEvent;
                 $event->calendar_id = $calendarId;
+
                 return $event;
             });
     }
@@ -95,7 +96,7 @@ class LaravelGoogleCalendar extends Event
     {
         $request->validate([
             'title' => 'required|string',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
         ]);
 
         $calendar = new Google_Service_Calendar_Calendar();
@@ -126,11 +127,11 @@ class LaravelGoogleCalendar extends Event
                 : static::carbonToDateTimeArray(Carbon::create($request->end)),
             'extendedProperties' => [
                 'shared' => [
-                    'max_attendees' => $request->max_attendees
+                    'max_attendees' => $request->max_attendees,
                 ],
                 'private' => [
-                    'event_type' => $request->event_type
-                ]
+                    'event_type' => $request->event_type,
+                ],
             ],
             'description' => $request->description ?? '',
             'location' => $request->location ?? '',
@@ -148,7 +149,7 @@ class LaravelGoogleCalendar extends Event
     {
         // validate that request includes id
         $request->validate([
-            'id' => 'required|string'
+            'id' => 'required|string',
         ]);
 
         // set calendar id
@@ -241,7 +242,7 @@ class LaravelGoogleCalendar extends Event
     {
         $request->validate([
             'id' => 'required|string',
-            'attendee' => 'required|array'
+            'attendee' => 'required|array',
         ]);
 
         $calendarId = $request->calendar_id ?? config('google-calendar.calendar_id');
@@ -264,7 +265,7 @@ class LaravelGoogleCalendar extends Event
             'comment' => $request->attendee['comment'] ?? null,
             'displayName' => $request->attendee['displayName'] ?? null,
             'additionalGuests' => $request->attendee['additionalGuests'] ?? 0,
-            'responseStatus' => $request->attendee['responseStatus'] ?? 'needsAction'
+            'responseStatus' => $request->attendee['responseStatus'] ?? 'needsAction',
         ]);
         $event->setAttendees($attendees);
 
@@ -285,7 +286,7 @@ class LaravelGoogleCalendar extends Event
     {
         $request->validate([
             'id' => 'required|string',
-            'attendee' => 'required|array'
+            'attendee' => 'required|array',
         ]);
 
         $calendarId = $request->calendar_id ?? config('google-calendar.calendar_id');
@@ -293,7 +294,7 @@ class LaravelGoogleCalendar extends Event
         $event = static::find($request->id, $calendarId)->googleEvent;
         $attendees = $event->getAttendees();
 
-        foreach($attendees as $attendee) {
+        foreach ($attendees as $attendee) {
             if ($attendee['email'] === $request->attendee['email']) {
                 foreach ($request->attendee as $key => $value) {
                     $attendee[$key] = $value;
@@ -320,7 +321,7 @@ class LaravelGoogleCalendar extends Event
     {
         $request->validate([
             'id' => 'required|string',
-            'calendar_id' => 'required|string'
+            'calendar_id' => 'required|string',
         ]);
 
         // check recurring options
