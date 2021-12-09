@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Cache;
 
 class GoogleCalendarController extends Controller
 {
-    // TODO: protect api routes with laravel sanctum
-
     /**
      * returns all google calendars with their events attached
      * response is cached for 1 day

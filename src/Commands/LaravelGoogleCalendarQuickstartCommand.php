@@ -60,7 +60,7 @@ class LaravelGoogleCalendarQuickstartCommand extends Command
         $client = new Google_Client();
         $client->setApplicationName('Google Calendar API PHP Quickstart');
         $client->setScopes(Google_Service_Calendar::CALENDAR);
-        $client->setAuthConfig(config('google-calendar.google-oauth-credentials-path'));
+        $client->setAuthConfig(config('google-calendar.auth_profiles.oauth.credentials_json'));
         $client->setAccessType('offline');
         $client->setPrompt('select_account consent');
 
@@ -68,8 +68,8 @@ class LaravelGoogleCalendarQuickstartCommand extends Command
         // The file token.json stores the user's access and refresh tokens, and is
         // created automatically when the authorization flow completes for the first
         // time.
-        if (file_exists(config('google-calendar.google-oauth-token-path'))) {
-            $accessToken = json_decode(file_get_contents(config('google-calendar.google-oauth-token-path')), true);
+        if (file_exists(config('google-calendar.auth_profiles.oauth.token_json'))) {
+            $accessToken = json_decode(file_get_contents(config('google-calendar.auth_profiles.oauth.token_json')), true);
             $client->setAccessToken($accessToken);
         }
 
@@ -95,10 +95,10 @@ class LaravelGoogleCalendarQuickstartCommand extends Command
                 }
             }
             // Save the token to a file.
-            if (! file_exists(dirname(config('google-calendar.google-oauth-token-path')))) {
-                mkdir(dirname(config('google-calendar.google-oauth-token-path')), 0700, true);
+            if (! file_exists(dirname(config('google-calendar.auth_profiles.oauth.token_json')))) {
+                mkdir(dirname(config('google-calendar.auth_profiles.oauth.token_json')), 0700, true);
             }
-            file_put_contents(config('google-calendar.google-oauth-token-path'), json_encode($client->getAccessToken()));
+            file_put_contents(config('google-calendar.auth_profiles.oauth.token_json'), json_encode($client->getAccessToken()));
         }
 
         return $client;
