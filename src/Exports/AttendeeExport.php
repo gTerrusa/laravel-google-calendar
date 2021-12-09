@@ -1,11 +1,9 @@
 <?php
 
-
 namespace GTerrusa\LaravelGoogleCalendar\Exports;
 
-
-use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendar as GoogleCalendarService;
 use Carbon\Carbon;
+use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendar as GoogleCalendarService;
 use Illuminate\Contracts\Support\Responsable;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -16,8 +14,10 @@ class AttendeeExport implements FromCollection, WithHeadings, Responsable
 {
     use Exportable;
 
-    private ?string $calendarId, $eventId;
-    private ?Carbon $start, $end;
+    private ?string $calendarId;
+    private ?string $eventId;
+    private ?Carbon $start;
+    private ?Carbon $end;
     private \Google_Service_Calendar_CalendarListEntry $calendar;
     private string $fileName;
     private string $writerType = Excel::CSV;
@@ -39,7 +39,9 @@ class AttendeeExport implements FromCollection, WithHeadings, Responsable
         $this->end = $end;
         $this->calendar = GoogleCalendarService::getGoogleCalendarService()->calendarList->get($this->calendarId);
         $event = $this->eventId
-            ? GoogleCalendarService::listEvents($this->calendarId)->first(function ($e) { return $e->id === $this->eventId; })
+            ? GoogleCalendarService::listEvents($this->calendarId)->first(function ($e) {
+                return $e->id === $this->eventId;
+            })
             : null;
         $this->fileName = $this->calendar->summary . '_' . ($event->summary ?? 'events') . '_attendees.csv';
     }
@@ -62,6 +64,7 @@ class AttendeeExport implements FromCollection, WithHeadings, Responsable
         if ($this->start) {
             $events = $events->filter(function ($event) {
                 $eventStart = Carbon::create($event->start->date ?? $event->start->dateTime)->startOfDay();
+
                 return $eventStart->greaterThanOrEqualTo($this->start->startOfDay());
             });
         }
@@ -69,12 +72,14 @@ class AttendeeExport implements FromCollection, WithHeadings, Responsable
         if ($this->end) {
             $events = $events->filter(function ($event) {
                 $eventEnd = Carbon::create($event->end->date ?? $event->end->dateTime)->startOfDay();
+
                 return $eventEnd->lessThanOrEqualTo($this->end->startOfDay());
             });
         }
 
         $attendees = $events->flatMap(function ($event) {
             $attendees = collect($event->getAttendees());
+
             return $attendees->map(function ($attendee) use ($event) {
                 return [
                     'calendar' => $this->calendar->primary ? 'Primary' : $this->calendar->summary,
@@ -82,7 +87,7 @@ class AttendeeExport implements FromCollection, WithHeadings, Responsable
                     'event_date' => Carbon::create($event->start->date ?? $event->start->dateTime)->toDayDateTimeString(),
                     'name' => $attendee->displayName,
                     'email' => $attendee->email,
-                    'response_status' => $attendee->responseStatus
+                    'response_status' => $attendee->responseStatus,
                 ];
             });
         });
@@ -103,7 +108,7 @@ class AttendeeExport implements FromCollection, WithHeadings, Responsable
             'event_date',
             'attendee_name',
             'attendee_email',
-            'attendee_response_status'
+            'attendee_response_status',
         ];
     }
 }

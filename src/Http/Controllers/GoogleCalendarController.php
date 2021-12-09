@@ -2,11 +2,10 @@
 
 namespace GTerrusa\LaravelGoogleCalendar\Http\Controllers;
 
-use GTerrusa\LaravelGoogleCalendar\Exports\AttendeeExport;
-use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendar as GoogleCalendarService;
-use GTerrusa\LaravelGoogleCalendar\Http\Requests\GoogleCalendarEventRequest;
 use Carbon\Carbon;
-use Google_Service_Calendar_CalendarList;
+use GTerrusa\LaravelGoogleCalendar\Exports\AttendeeExport;
+use GTerrusa\LaravelGoogleCalendar\Http\Requests\GoogleCalendarEventRequest;
+use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendar as GoogleCalendarService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -29,6 +28,7 @@ class GoogleCalendarController extends Controller
             return collect(GoogleCalendarService::listAllCalendars()->getItems())
                 ->map(function ($calendar) {
                     $calendar->events = GoogleCalendarService::listEvents($calendar->id);
+
                     return $calendar;
                 })
                 ->values();
@@ -63,7 +63,7 @@ class GoogleCalendarController extends Controller
 
         return response()->json([
             'calendar' => (array) $calendar,
-            'calendars' => $this->calendars()
+            'calendars' => $this->calendars(),
         ]);
     }
 
@@ -81,7 +81,7 @@ class GoogleCalendarController extends Controller
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars()
+            'calendars' => $this->calendars(),
         ]);
     }
 
@@ -99,7 +99,7 @@ class GoogleCalendarController extends Controller
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars()
+            'calendars' => $this->calendars(),
         ]);
     }
 
@@ -115,7 +115,7 @@ class GoogleCalendarController extends Controller
 
         return response()->json([
             'response' => GoogleCalendarService::deleteEventFromRequest($request),
-            'calendars' => $this->calendars()
+            'calendars' => $this->calendars(),
         ]);
     }
 
@@ -133,7 +133,7 @@ class GoogleCalendarController extends Controller
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars()
+            'calendars' => $this->calendars(),
         ]);
     }
 
@@ -151,7 +151,7 @@ class GoogleCalendarController extends Controller
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars()
+            'calendars' => $this->calendars(),
         ]);
     }
 
@@ -167,7 +167,7 @@ class GoogleCalendarController extends Controller
             'calendar_id' => 'nullable|string',
             'event_id' => 'nullable|string',
             'start' => 'nullable|date',
-            'end' => 'nullable|date'
+            'end' => 'nullable|date',
         ]);
 
         $start = $request->start ? Carbon::create($request->start) : null;
