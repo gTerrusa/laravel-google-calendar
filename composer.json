@@ -18,6 +18,8 @@
     "require": {
         "php": "^7.4|^8.0",
         "illuminate/contracts": "^8.73",
+        "maatwebsite/excel": "^3.1",
+        "rlanvin/php-rrule": "^2.3",
         "spatie/laravel-google-calendar": "^3.4",
         "spatie/laravel-package-tools": "^1.9.2"
     },

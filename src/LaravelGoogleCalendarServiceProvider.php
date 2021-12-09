@@ -20,6 +20,7 @@ class LaravelGoogleCalendarServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_laravel-google-calendar_table')
-            ->hasCommand(LaravelGoogleCalendarQuickstartCommand::class);
+            ->hasCommand(LaravelGoogleCalendarQuickstartCommand::class)
+            ->hasRoute('api');
     }
 }
