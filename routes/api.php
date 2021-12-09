@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::prefix('google-calendar')->group(function() {
+Route::group([
+    'prefix' => 'api/google-calendar',
+    'middleware' => ['api']
+], function() {
     // get requests
     Route::get('/calendars', [GoogleCalendarController::class, 'calendars']);
     Route::get('/calendars/refresh-cache', [GoogleCalendarController::class, 'refreshCache']);
