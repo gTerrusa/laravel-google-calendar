@@ -69,8 +69,12 @@ class LaravelGoogleCalendarQuickstartCommand extends Command
         // created automatically when the authorization flow completes for the first
         // time.
         if (file_exists(config('google-calendar.auth_profiles.oauth.token_json'))) {
-            $accessToken = json_decode(file_get_contents(config('google-calendar.auth_profiles.oauth.token_json')), true);
-            $client->setAccessToken($accessToken);
+            if ($this->confirm('An oauth token is already present. Would you like to generate a new one?', true)) {
+                unlink(config('google-calendar.auth_profiles.oauth.token_json'));
+            } else {
+                $accessToken = json_decode(file_get_contents(config('google-calendar.auth_profiles.oauth.token_json')), true);
+                $client->setAccessToken($accessToken);
+            }
         }
 
         // If there is no previous token or it's expired.
