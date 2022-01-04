@@ -96,7 +96,7 @@ class LaravelGoogleCalendar extends Event
      */
     public static function createRecurringEvent(array $properties, string $calendarId = null, $optParams = [])
     {
-        $event = new static;
+        $event = new static();
 
         $event->calendarId = static::getGoogleCalendar($calendarId)->getCalendarId();
 
