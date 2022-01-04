@@ -87,6 +87,29 @@ class LaravelGoogleCalendar extends Event
     }
 
     /**
+     * creates a recurring google calendar event
+     *
+     * @param array $properties
+     * @param string|null $calendarId
+     * @param $optParams
+     * @return LaravelGoogleCalendar
+     */
+    public static function createRecurringEvent(array $properties, string $calendarId = null, $optParams = [])
+    {
+        $event = new static;
+
+        $event->calendarId = static::getGoogleCalendar($calendarId)->getCalendarId();
+
+        foreach ($properties as $name => $value) {
+            $event->$name = $value;
+        }
+
+        $event->googleEvent->setRecurrence($properties['recurrence'] ?? null);
+
+        return $event->save('insertEvent', $optParams);
+    }
+
+    /**
      * creates a new google calendar from a Request
      *
      * @param Request $request
@@ -117,7 +140,7 @@ class LaravelGoogleCalendar extends Event
     {
         $calendarId = $request->calendar_id ?? config('google-calendar.calendar_id');
 
-        return static::create([
+        $eventProps = [
             'summary' => $request->title,
             'start' => $request->allDay
                 ? static::carbonToDateArray(Carbon::create($request->start))
@@ -136,7 +159,11 @@ class LaravelGoogleCalendar extends Event
             'description' => $request->description ?? '',
             'location' => $request->location ?? '',
             'recurrence' => $request->recurrence ?? null,
-        ], $calendarId);
+        ];
+
+        return $request->recurrence
+            ? static::createRecurringEvent($eventProps, $calendarId)
+            : static::create($eventProps, $calendarId);
     }
 
     /**
