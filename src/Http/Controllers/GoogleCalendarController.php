@@ -9,7 +9,6 @@ use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendar as GoogleCalendarServic
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 
 class GoogleCalendarController extends Controller
 {
@@ -75,7 +74,7 @@ class GoogleCalendarController extends Controller
      */
     public function updateEvent(GoogleCalendarEventRequest $request): JsonResponse
     {
-       $event = GoogleCalendarService::updateEventFromRequest($request);
+        $event = GoogleCalendarService::updateEventFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
