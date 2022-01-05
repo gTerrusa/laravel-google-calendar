@@ -20,7 +20,6 @@ Route::group([
 ], function() {
     // get requests
     Route::get('/calendars', [GoogleCalendarController::class, 'calendars']);
-    Route::get('/calendars/refresh-cache', [GoogleCalendarController::class, 'refreshCache']);
 
     // post requests
     Route::post('/calendars/create', [GoogleCalendarController::class, 'createCalendar']);

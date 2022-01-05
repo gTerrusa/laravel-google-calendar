@@ -71,13 +71,17 @@ class LaravelGoogleCalendar extends Event
      * list all events from a google calendar
      *
      * @param null $calendarId
+     * @param null $start
+     * @param null $end
      * @return Collection
      */
-    public static function listEvents($calendarId = null): Collection
+    public static function listEvents($calendarId = null, $start = null,  $end = null): Collection
     {
         $calendarId = $calendarId ?? config('google-calendar.calendar_id');
+        $start = $start ? new Carbon($start) : Carbon::now()->subYear();
+        $end = $end ? new Carbon($end) : Carbon::now()->addYear();
 
-        return collect(static::get(Carbon::now()->subYear(), Carbon::now()->addYear(), [], $calendarId))
+        return collect(static::get($start, $end, [], $calendarId))
             ->map(function ($event) use ($calendarId) {
                 $event = $event->googleEvent;
                 $event->calendar_id = $calendarId;

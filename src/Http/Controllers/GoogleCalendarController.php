@@ -20,31 +20,19 @@ class GoogleCalendarController extends Controller
      * @param Request|null $request
      * @return Collection
      */
-    public function calendars(Request $request = null): Collection
+    public function calendars(Request $request): Collection
     {
-        return Cache::remember('google_calendars', 86400, function () {
-            return collect(GoogleCalendarService::listAllCalendars()->getItems())
-                ->map(function ($calendar) {
-                    $calendar->events = GoogleCalendarService::listEvents($calendar->id);
+        return collect(GoogleCalendarService::listAllCalendars()->getItems())
+            ->map(function ($calendar) use ($request) {
+                $calendar->events = GoogleCalendarService::listEvents(
+                    $calendar->id,
+                    $request->start ?? null,
+                    $request->end ?? null
+                );
 
-                    return $calendar;
-                })
-                ->values();
-        });
-    }
-
-    /**
-     * returns all google calendars with their events attached
-     * response is cached for 1 day
-     *
-     * @param Request|null $request
-     * @return Collection
-     */
-    public function refreshCache(Request $request = null): Collection
-    {
-        Cache::forget('google_calendars');
-
-        return $this->calendars();
+                return $calendar;
+            })
+            ->values();
     }
 
     /**
@@ -55,13 +43,11 @@ class GoogleCalendarController extends Controller
      */
     public function createCalendar(Request $request): JsonResponse
     {
-        Cache::forget('google_calendars');
-
         $calendar = GoogleCalendarService::createCalendarFromRequest($request);
 
         return response()->json([
             'calendar' => (array) $calendar,
-            'calendars' => $this->calendars(),
+            'calendars' => $this->calendars($request),
         ]);
     }
 
@@ -73,13 +59,11 @@ class GoogleCalendarController extends Controller
      */
     public function createEvent(GoogleCalendarEventRequest $request): JsonResponse
     {
-        Cache::forget('google_calendars');
-
         $event = GoogleCalendarService::createEventFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars(),
+            'calendars' => $this->calendars($request),
         ]);
     }
 
@@ -91,13 +75,11 @@ class GoogleCalendarController extends Controller
      */
     public function updateEvent(GoogleCalendarEventRequest $request): JsonResponse
     {
-        Cache::forget('google_calendars');
-
-        $event = GoogleCalendarService::updateEventFromRequest($request);
+       $event = GoogleCalendarService::updateEventFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars(),
+            'calendars' => $this->calendars($request),
         ]);
     }
 
@@ -109,11 +91,9 @@ class GoogleCalendarController extends Controller
      */
     public function deleteEvent(Request $request): JsonResponse
     {
-        Cache::forget('google_calendars');
-
         return response()->json([
             'response' => GoogleCalendarService::deleteEventFromRequest($request),
-            'calendars' => $this->calendars(),
+            'calendars' => $this->calendars($request),
         ]);
     }
 
@@ -125,13 +105,11 @@ class GoogleCalendarController extends Controller
      */
     public function addAttendeeToEvent(Request $request): JsonResponse
     {
-        Cache::forget('google_calendars');
-
         $event = GoogleCalendarService::addAttendeeFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars(),
+            'calendars' => $this->calendars($request),
         ]);
     }
 
@@ -143,13 +121,11 @@ class GoogleCalendarController extends Controller
      */
     public function updateAttendee(Request $request): JsonResponse
     {
-        Cache::forget('google_calendars');
-
         $event = GoogleCalendarService::updateAttendeeFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
-            'calendars' => $this->calendars(),
+            'calendars' => $this->calendars($request),
         ]);
     }
 
