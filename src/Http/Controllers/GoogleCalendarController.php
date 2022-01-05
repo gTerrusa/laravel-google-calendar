@@ -25,8 +25,8 @@ class GoogleCalendarController extends Controller
             ->map(function ($calendar) use ($request) {
                 $calendar->events = GoogleCalendarService::listEvents(
                     $calendar->id,
-                    $request->start ?? null,
-                    $request->end ?? null
+                    $request->event_list_start ?? null,
+                    $request->event_list_end ?? null
                 );
 
                 return $calendar;
