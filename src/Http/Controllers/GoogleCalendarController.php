@@ -5,7 +5,7 @@ namespace GTerrusa\LaravelGoogleCalendar\Http\Controllers;
 use Carbon\Carbon;
 use GTerrusa\LaravelGoogleCalendar\Exports\AttendeeExport;
 use GTerrusa\LaravelGoogleCalendar\Http\Requests\GoogleCalendarEventRequest;
-use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendar as GoogleCalendarService;
+use GTerrusa\LaravelGoogleCalendar\LaravelGoogleCalendar;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -21,9 +21,9 @@ class GoogleCalendarController extends Controller
      */
     public function calendars(Request $request): Collection
     {
-        return collect(GoogleCalendarService::listAllCalendars()->getItems())
+        return collect(LaravelGoogleCalendar::listAllCalendars()->getItems())
             ->map(function ($calendar) use ($request) {
-                $calendar->events = GoogleCalendarService::listEvents(
+                $calendar->events = LaravelGoogleCalendar::listEvents(
                     $calendar->id,
                     $request->event_list_start ?? null,
                     $request->event_list_end ?? null
@@ -42,11 +42,59 @@ class GoogleCalendarController extends Controller
      */
     public function createCalendar(Request $request): JsonResponse
     {
-        $calendar = GoogleCalendarService::createCalendarFromRequest($request);
+        $calendar = LaravelGoogleCalendar::createCalendarFromRequest($request);
 
         return response()->json([
             'calendar' => (array) $calendar,
             'calendars' => $this->calendars($request),
+        ]);
+    }
+
+    /**
+     * updates a google calendar.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateCalendar(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'id' => 'string|required',
+            'description' => 'string_or_array|nullable',
+            'location' => 'string|nullable',
+            'summary' => 'string|nullable',
+            'timeZone' => 'string|nullable',
+            'conferenceProperties' => 'array|nullable'
+        ]);
+
+        if (isset($validated['description']) && is_array($validated['description'])) {
+            $validated['description'] = json_encode($validated['description']);
+        }
+
+        $updatedCalendar = LaravelGoogleCalendar::updateCalendar($validated['id'], $validated);
+
+        return response()->json([
+            'calendar' => $updatedCalendar,
+            'calendars' => $this->calendars($request)
+        ]);
+    }
+
+    /**
+     * deletes a google calendar.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function deleteCalendar(Request $request): JsonResponse
+    {
+        $request->validate([
+            'id' => 'string|required'
+        ]);
+
+        LaravelGoogleCalendar::deleteCalendar($request->id);
+
+        return response()->json([
+            'calendars' => $this->calendars($request)
         ]);
     }
 
@@ -58,7 +106,7 @@ class GoogleCalendarController extends Controller
      */
     public function createEvent(GoogleCalendarEventRequest $request): JsonResponse
     {
-        $event = GoogleCalendarService::createEventFromRequest($request);
+        $event = LaravelGoogleCalendar::createEventFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
@@ -74,7 +122,7 @@ class GoogleCalendarController extends Controller
      */
     public function updateEvent(GoogleCalendarEventRequest $request): JsonResponse
     {
-        $event = GoogleCalendarService::updateEventFromRequest($request);
+        $event = LaravelGoogleCalendar::updateEventFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
@@ -91,7 +139,7 @@ class GoogleCalendarController extends Controller
     public function deleteEvent(Request $request): JsonResponse
     {
         return response()->json([
-            'response' => GoogleCalendarService::deleteEventFromRequest($request),
+            'response' => LaravelGoogleCalendar::deleteEventFromRequest($request),
             'calendars' => $this->calendars($request),
         ]);
     }
@@ -104,7 +152,7 @@ class GoogleCalendarController extends Controller
      */
     public function addAttendeeToEvent(Request $request): JsonResponse
     {
-        $event = GoogleCalendarService::addAttendeeFromRequest($request);
+        $event = LaravelGoogleCalendar::addAttendeeFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,
@@ -120,7 +168,7 @@ class GoogleCalendarController extends Controller
      */
     public function updateAttendee(Request $request): JsonResponse
     {
-        $event = GoogleCalendarService::updateAttendeeFromRequest($request);
+        $event = LaravelGoogleCalendar::updateAttendeeFromRequest($request);
 
         return response()->json([
             'event' => (array) $event,

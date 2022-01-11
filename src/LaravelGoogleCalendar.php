@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use RRule\RRule;
 use Spatie\GoogleCalendar\Event;
+use Google\Service\Exception as GoogleServiceException;
+
+// use Illuminate\Support\Facades\Log;
 
 class LaravelGoogleCalendar extends Event
 {
@@ -88,6 +91,59 @@ class LaravelGoogleCalendar extends Event
 
                 return $event;
             });
+    }
+
+    /**
+     * updates a google calendar's metadata.
+     *
+     * @param string $calendarId
+     * @param array $params
+     * @return mixed
+     */
+    public static function updateCalendar(string $calendarId, array $params)
+    {
+        $calService = static::getGoogleCalendarService();
+
+        try {
+            $calendar = $calService->calendars->get($calendarId);
+        } catch (GoogleServiceException $e) {
+            // $errors = $e->getErrors();
+
+            // Log::error('LaravelGoogleCalendar@updateCalendar Error: ' . json_encode($errors));
+
+            return false;
+        }
+
+        foreach ($params as $key => $value) {
+            $calendar->$key = $value;
+        }
+
+        try {
+            $returnCalendar = $calService->calendars->update($calendarId, $calendar);
+        } catch (\Exception $e) {
+            // $message = $e->getMessage();
+
+            // Log::error('LaravelGoogleCalendar@updateCalendar Error: ' . $message);
+
+            return false;
+        }
+
+        return $returnCalendar;
+    }
+
+    /**
+     * delete a google calendar.
+     *
+     * @param string $calendarId
+     * @return null
+     */
+    public static function deleteCalendar(string $calendarId)
+    {
+        try {
+            static::getGoogleCalendarService()->calendars->delete($calendarId);
+        } catch (\Exception $e) {  }
+
+        return null;
     }
 
     /**

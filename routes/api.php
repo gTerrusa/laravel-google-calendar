@@ -23,6 +23,8 @@ Route::group([
 
     // post requests
     Route::post('/calendars/create', [GoogleCalendarController::class, 'createCalendar']);
+    Route::post('/calendars/update', [GoogleCalendarController::class, 'updateCalendar']);
+    Route::post('/calendars/delete', [GoogleCalendarController::class, 'deleteCalendar']);
     Route::post('/calendars/events/create', [GoogleCalendarController::class, 'createEvent']);
     Route::post('/calendars/events/update', [GoogleCalendarController::class, 'updateEvent']);
     Route::post('/calendars/events/delete', [GoogleCalendarController::class, 'deleteEvent']);
