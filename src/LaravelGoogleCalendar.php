@@ -3,6 +3,7 @@
 namespace GTerrusa\LaravelGoogleCalendar;
 
 use Carbon\Carbon;
+use Google\Service\Exception as GoogleServiceException;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Calendar;
 use Google_Service_Calendar_CalendarList;
@@ -15,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use RRule\RRule;
 use Spatie\GoogleCalendar\Event;
-use Google\Service\Exception as GoogleServiceException;
 
 // use Illuminate\Support\Facades\Log;
 
@@ -141,7 +141,8 @@ class LaravelGoogleCalendar extends Event
     {
         try {
             static::getGoogleCalendarService()->calendars->delete($calendarId);
-        } catch (\Exception $e) {  }
+        } catch (\Exception $e) {
+        }
 
         return null;
     }
