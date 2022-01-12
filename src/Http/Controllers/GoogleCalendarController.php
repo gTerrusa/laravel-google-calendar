@@ -42,11 +42,23 @@ class GoogleCalendarController extends Controller
      */
     public function createCalendar(Request $request): JsonResponse
     {
-        $calendar = LaravelGoogleCalendar::createCalendarFromRequest($request);
+        $validated = $request->validate([
+            'description' => 'string_or_array|nullable',
+            'location' => 'string|nullable',
+            'summary' => 'string|nullable',
+            'timeZone' => 'string|nullable',
+            'conferenceProperties' => 'array|nullable'
+        ]);
+
+        if (isset($validated['description']) && is_array($validated['description'])) {
+            $validated['description'] = json_encode($validated['description']);
+        }
+
+        $newCalendar = LaravelGoogleCalendar::createCalendar($validated);
 
         return response()->json([
-            'calendar' => (array) $calendar,
-            'calendars' => $this->calendars($request),
+            'calendar' => $newCalendar,
+            'calendars' => $this->calendars($request)
         ]);
     }
 

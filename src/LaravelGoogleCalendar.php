@@ -94,6 +94,29 @@ class LaravelGoogleCalendar extends Event
     }
 
     /**
+     * creates a new google calendar.
+     *
+     * @param array $params
+     * @return Google_Service_Calendar_Calendar|false
+     */
+    public static function createCalendar(array $params)
+    {
+        $calendar = new Google_Service_Calendar_Calendar($params);
+
+        if (!isset($params['timeZone'])) {
+            $calendar->setTimeZone('America/Los_Angeles');
+        }
+
+        try {
+            $newCalendar = static::getGoogleCalendarService()->calendars->insert($calendar);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return $newCalendar;
+    }
+
+    /**
      * updates a google calendar's metadata.
      *
      * @param string $calendarId
@@ -167,27 +190,6 @@ class LaravelGoogleCalendar extends Event
         $event->googleEvent->setRecurrence($properties['recurrence'] ?? null);
 
         return $event->save('insertEvent', $optParams);
-    }
-
-    /**
-     * creates a new google calendar from a Request
-     *
-     * @param Request $request
-     * @return Google_Service_Calendar_Calendar
-     */
-    public static function createCalendarFromRequest(Request $request): Google_Service_Calendar_Calendar
-    {
-        $request->validate([
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-        ]);
-
-        $calendar = new Google_Service_Calendar_Calendar();
-        $calendar->setSummary($request->title);
-        $calendar->setDescription($request->description);
-        $calendar->setTimeZone('America/Los_Angeles');
-
-        return static::getGoogleCalendarService()->calendars->insert($calendar);
     }
 
     /**
