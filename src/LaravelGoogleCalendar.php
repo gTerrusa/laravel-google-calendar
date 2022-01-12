@@ -103,7 +103,7 @@ class LaravelGoogleCalendar extends Event
     {
         $calendar = new Google_Service_Calendar_Calendar($params);
 
-        if (!isset($params['timeZone'])) {
+        if (! isset($params['timeZone'])) {
             $calendar->setTimeZone('America/Los_Angeles');
         }
 

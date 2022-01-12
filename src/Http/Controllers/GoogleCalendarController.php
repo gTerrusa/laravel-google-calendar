@@ -47,7 +47,7 @@ class GoogleCalendarController extends Controller
             'location' => 'string|nullable',
             'summary' => 'string|nullable',
             'timeZone' => 'string|nullable',
-            'conferenceProperties' => 'array|nullable'
+            'conferenceProperties' => 'array|nullable',
         ]);
 
         if (isset($validated['description']) && is_array($validated['description'])) {
@@ -58,7 +58,7 @@ class GoogleCalendarController extends Controller
 
         return response()->json([
             'calendar' => $newCalendar,
-            'calendars' => $this->calendars($request)
+            'calendars' => $this->calendars($request),
         ]);
     }
 
