@@ -3,6 +3,7 @@
 namespace GTerrusa\LaravelGoogleCalendar;
 
 use Carbon\Carbon;
+use Google\Service\Calendar\EventReminders;
 use Google\Service\Exception as GoogleServiceException;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Calendar;
@@ -171,16 +172,16 @@ class LaravelGoogleCalendar extends Event
     }
 
     /**
-     * creates a recurring google calendar event
+     * creates an event.
      *
      * @param array $properties
      * @param string|null $calendarId
-     * @param $optParams
-     * @return LaravelGoogleCalendar
+     * @param array $optParams
+     * @return mixed
      */
-    public static function createRecurringEvent(array $properties, string $calendarId = null, $optParams = [])
+    public static function create(array $properties, string $calendarId = null, $optParams = [])
     {
-        $event = new static();
+        $event = new static;
 
         $event->calendarId = static::getGoogleCalendar($calendarId)->getCalendarId();
 
@@ -188,7 +189,24 @@ class LaravelGoogleCalendar extends Event
             $event->$name = $value;
         }
 
-        $event->googleEvent->setRecurrence($properties['recurrence'] ?? null);
+        if (isset($properties['recurrence'])) {
+            $event->googleEvent->setRecurrence($properties['recurrence'] ?? null);
+        }
+
+        if (!isset($optParams['sendUpdates']) && $sendUpdates = config('google-calendar.always_send_updates', 'all')) {
+            $optParams['sendUpdates'] = $sendUpdates;
+        }
+
+        if ($overrides = config('google-calendar.override_default_reminders', false)) {
+            $reminders = new EventReminders();
+            $reminders->setUseDefault(false);
+            $reminders->setOverrides($overrides);
+            $event->googleEvent->setReminders($reminders);
+        } else {
+            $reminders = new EventReminders();
+            $reminders->setUseDefault(true);
+            $event->googleEvent->setReminders($reminders);
+        }
 
         return $event->save('insertEvent', $optParams);
     }
@@ -224,9 +242,7 @@ class LaravelGoogleCalendar extends Event
             'recurrence' => $request->recurrence ?? null,
         ];
 
-        return $request->recurrence
-            ? static::createRecurringEvent($eventProps, $calendarId)
-            : static::create($eventProps, $calendarId);
+        return static::create($eventProps, $calendarId);
     }
 
     /**
@@ -359,10 +375,15 @@ class LaravelGoogleCalendar extends Event
         ]);
         $event->setAttendees($attendees);
 
+        $optParams = [
+            'sendUpdates' => config('google-calendar.always_send_updates', 'all')
+        ];
+
         return static::getGoogleCalendarService()->events->update(
             $calendarId,
             $event->getId(),
-            $event
+            $event,
+            $optParams
         );
     }
 

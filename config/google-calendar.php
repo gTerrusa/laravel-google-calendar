@@ -45,4 +45,19 @@ return [
      *  The id of the Google Calendar that will be used by default.
      */
     'calendar_id' => env('GOOGLE_CALENDAR_ID'),
+
+    /**
+     *  Values can be 'all', 'externalOnly', and 'none'.
+     */
+    'send_updates' => 'all',
+
+    /**
+     *  Set to false to use default reminders.
+     */
+    'override_default_reminders' => [
+        [ 'method' => 'email', 'minutes' => 24 * 60 ], // send email 1 day before.
+        [ 'method' => 'email', 'minutes' => 2 * 60 ], // send email 2 hrs before.
+        [ 'method' => 'popup', 'minutes' => 24 * 60 ], // send popup 1 day before.
+        [ 'method' => 'popup', 'minutes' => 2 * 60 ]  // send email 2 hrs before.
+    ]
 ];
