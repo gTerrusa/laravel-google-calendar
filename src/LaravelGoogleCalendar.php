@@ -342,9 +342,9 @@ class LaravelGoogleCalendar extends Event
      * add an attendee to an event from a request
      *
      * @param Request $request
-     * @return Google_Service_Calendar_Event
+     * @return false|Google_Service_Calendar_Event
      */
-    public static function addAttendeeFromRequest(Request $request): Google_Service_Calendar_Event
+    public static function addAttendeeFromRequest(Request $request)
     {
         $request->validate([
             'id' => 'required|string',
@@ -362,7 +362,7 @@ class LaravelGoogleCalendar extends Event
         $eventFull = isset($event->extendedProperties->shared['max_attendees'])
             && ($notDeclinedAttendees->count() >= (int) $event->extendedProperties->shared['max_attendees']);
         if ($eventFull) {
-            return $event;
+            return false;
         }
 
         $attendees = $event->getAttendees();
