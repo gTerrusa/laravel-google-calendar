@@ -208,6 +208,10 @@ class LaravelGoogleCalendar extends Event
             $event->googleEvent->setReminders($reminders);
         }
 
+        $event->googleEvent->guestsCanInviteOthers = config('google-calendar.guests_can_invite_others', false);
+        $event->googleEvent->guestsCanModify = config('google-calendar.guests_can_modify', false);
+        $event->googleEvent->guestsCanSeeOtherGuests = config('google-calendar.guests_can_see_other_guests', false);
+
         return $event->save('insertEvent', $optParams);
     }
 
