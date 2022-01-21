@@ -166,9 +166,9 @@ class GoogleCalendarController extends Controller
     {
         $event = LaravelGoogleCalendar::addAttendeeFromRequest($request);
 
-        if (!$event) {
+        if (! $event) {
             return response()->json([
-                'message' => 'Event is full'
+                'message' => 'Event is full',
             ], 400);
         }
 
