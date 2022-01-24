@@ -56,11 +56,13 @@ return [
      * Set to false for no notifications.
      */
     'notification_settings' => [
-        [ 'method' => 'email', 'type' => 'eventCreation' ],
-        [ 'method' => 'email', 'type' => 'eventChange' ],
-        [ 'method' => 'email', 'type' => 'eventCancellation' ],
-        [ 'method' => 'email', 'type' => 'eventResponse' ],
-        [ 'method' => 'email', 'type' => 'agenda' ],
+        'notifications' => [
+            [ 'method' => 'email', 'type' => 'eventCreation' ],
+            [ 'method' => 'email', 'type' => 'eventChange' ],
+            [ 'method' => 'email', 'type' => 'eventCancellation' ],
+            [ 'method' => 'email', 'type' => 'eventResponse' ],
+            [ 'method' => 'email', 'type' => 'agenda' ],
+        ]
     ],
 
     /**

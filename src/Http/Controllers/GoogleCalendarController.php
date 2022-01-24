@@ -54,11 +54,14 @@ class GoogleCalendarController extends Controller
             $validated['description'] = json_encode($validated['description']);
         }
 
-        if ($notificationSettings = config('google-calendar.notification_settings', false)) {
-            $validated['notificationSettings'] = $notificationSettings;
-        }
-
         $newCalendar = LaravelGoogleCalendar::createCalendar($validated);
+
+        if ($notificationSettings = config('google-calendar.notification_settings', false)) {
+            $service = LaravelGoogleCalendar::getGoogleCalendarService();
+            $cList = $service->calendarList->get($newCalendar->getId());
+            $cList->notificationSettings = $notificationSettings;
+            $service->calendarList->update($cList->getId(), $cList);
+        }
 
         return response()->json([
             'calendar' => $newCalendar,
