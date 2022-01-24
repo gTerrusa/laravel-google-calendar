@@ -52,6 +52,18 @@ return [
     'send_updates' => 'all',
 
     /**
+     * Default new calendar notifications.
+     * Set to false for no notifications.
+     */
+    'notification_settings' => [
+        [ 'method' => 'email', 'type' => 'eventCreation' ],
+        [ 'method' => 'email', 'type' => 'eventChange' ],
+        [ 'method' => 'email', 'type' => 'eventCancellation' ],
+        [ 'method' => 'email', 'type' => 'eventResponse' ],
+        [ 'method' => 'email', 'type' => 'agenda' ],
+    ],
+
+    /**
      *  Default event reminders.
      *
      *  Set false to use default reminders.
