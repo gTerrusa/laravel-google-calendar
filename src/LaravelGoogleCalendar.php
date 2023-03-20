@@ -193,7 +193,7 @@ class LaravelGoogleCalendar extends Event
             $event->googleEvent->setRecurrence($properties['recurrence'] ?? null);
         }
 
-        if (! isset($optParams['sendUpdates']) && $sendUpdates = config('google-calendar.always_send_updates', 'all')) {
+        if (! isset($optParams['sendUpdates']) && $sendUpdates = config('google-calendar.send_updates', 'all')) {
             $optParams['sendUpdates'] = $sendUpdates;
         }
 
@@ -380,7 +380,7 @@ class LaravelGoogleCalendar extends Event
         $event->setAttendees($attendees);
 
         $optParams = [
-            'sendUpdates' => config('google-calendar.always_send_updates', 'all'),
+            'sendUpdates' => config('google-calendar.send_updates', 'all'),
         ];
 
         return static::getGoogleCalendarService()->events->update(
