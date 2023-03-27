@@ -413,6 +413,7 @@ class LaravelGoogleCalendar extends Event
             if ($attendee['email'] === $request->attendee['email']) {
                 unset($attendees[$key]);
                 $attendees = array_values($attendees);
+
                 break;
             }
         }
