@@ -186,6 +186,22 @@ class GoogleCalendarController extends Controller
     }
 
     /**
+     * removes a google calendar event attendee
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function removeAttendee(Request $request): JsonResponse
+    {
+        $event = LaravelGoogleCalendar::removeAttendeeFromRequest($request);
+
+        return response()->json([
+            'event' => (array) $event,
+            'calendars' => $this->calendars($request),
+        ]);
+    }
+
+    /**
      * updates a google calendar event attendee
      *
      * @param Request $request

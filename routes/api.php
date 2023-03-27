@@ -29,6 +29,7 @@ Route::group([
     Route::post('/calendars/events/update', [GoogleCalendarController::class, 'updateEvent']);
     Route::post('/calendars/events/delete', [GoogleCalendarController::class, 'deleteEvent']);
     Route::post('/calendars/events/attendees/add', [GoogleCalendarController::class, 'addAttendeeToEvent']);
+    Route::post('/calendars/events/attendees/remove', [GoogleCalendarController::class, 'removeAttendee']);
     Route::post('/calendars/events/attendees/update', [GoogleCalendarController::class, 'updateAttendee']);
     Route::post('/calendars/events/attendees/download', [GoogleCalendarController::class, 'downloadAttendees']);
 });

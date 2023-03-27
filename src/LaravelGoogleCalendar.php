@@ -392,6 +392,41 @@ class LaravelGoogleCalendar extends Event
     }
 
     /**
+     * remove an attendee from an event from a request
+     *
+     * @param Request $request
+     * @return Google_Service_Calendar_Event
+     */
+    public static function removeAttendeeFromRequest(Request $request): Google_Service_Calendar_Event
+    {
+        $request->validate([
+            'id' => 'required|string',
+            'attendee' => 'required|array',
+        ]);
+
+        $calendarId = $request->calendar_id ?? config('google-calendar.calendar_id');
+
+        $event = static::find($request->id, $calendarId)->googleEvent;
+        $attendees = $event->getAttendees();
+
+        foreach ($attendees as $key => $attendee) {
+            if ($attendee['email'] === $request->attendee['email']) {
+                unset($attendees[$key]);
+                $attendees = array_values($attendees);
+                break;
+            }
+        }
+
+        $event->setAttendees($attendees);
+
+        return static::getGoogleCalendarService()->events->update(
+            $calendarId,
+            $event->getId(),
+            $event
+        );
+    }
+
+    /**
      * update a google event attendee from a request
      *
      * @param Request $request
