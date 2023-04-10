@@ -53,27 +53,11 @@ class AttendeeExport implements FromCollection, WithHeadings, Responsable
      */
     public function collection(): \Illuminate\Support\Collection
     {
-        $events = GoogleCalendarService::listEvents($this->calendarId);
+        $events = GoogleCalendarService::listEvents($this->calendarId, $this->start ?? null, $this->end ?? null);
 
         if ($this->eventId) {
             $events = $events->filter(function ($event) {
                 return $event->id === $this->eventId;
-            });
-        }
-
-        if ($this->start) {
-            $events = $events->filter(function ($event) {
-                $eventStart = Carbon::create($event->start->date ?? $event->start->dateTime)->startOfDay();
-
-                return $eventStart->greaterThanOrEqualTo($this->start->startOfDay());
-            });
-        }
-
-        if ($this->end) {
-            $events = $events->filter(function ($event) {
-                $eventEnd = Carbon::create($event->end->date ?? $event->end->dateTime)->startOfDay();
-
-                return $eventEnd->lessThanOrEqualTo($this->end->startOfDay());
             });
         }
 
